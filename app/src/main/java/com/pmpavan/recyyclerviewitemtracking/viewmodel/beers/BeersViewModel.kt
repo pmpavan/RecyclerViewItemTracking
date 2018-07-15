@@ -31,6 +31,7 @@ class BeersViewModel @Inject constructor(var context: Context, var eventBus: Eve
                     val uiState = BeerListItemUiState()
                     uiState.id = t.getId()!!
                     uiState.name = t.getName()
+                    uiState.avatarUrl = t.getImageUrl()
                     return@concatMap Observable.just(uiState)
                 }
                 .toList()
@@ -54,6 +55,7 @@ class BeersViewModel @Inject constructor(var context: Context, var eventBus: Eve
         val uiState = BeerListItemUiState()
         uiState.id = t.getId()!!
         uiState.name = t.getName()
+        uiState.avatarUrl = t.getImageUrl()
         return Observable.just(uiState)
     }
 }

@@ -2,6 +2,7 @@ package com.pmpavan.recyyclerviewitemtracking.app
 
 import android.app.Activity
 import android.app.Application
+import com.facebook.drawee.backends.pipeline.Fresco
 import com.pmpavan.recyyclerviewitemtracking.app.di.component.DaggerApplicationComponent
 import com.pmpavan.recyyclerviewitemtracking.app.di.module.ApplicationModule
 import com.pmpavan.recyyclerviewitemtracking.app.di.module.NetModule
@@ -23,6 +24,7 @@ class RecyclerViewTrackingApplication : Application(), HasActivityInjector {
 
     override fun onCreate() {
         super.onCreate()
+        Fresco.initialize(this)
         DaggerApplicationComponent.builder()
                 .applicationModule(ApplicationModule(this))
                 .netModule(NetModule(AppConstants.BASE_URL))

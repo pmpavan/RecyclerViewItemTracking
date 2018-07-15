@@ -9,5 +9,9 @@ class BeerListItemUiState {
     var name: String? = ""
     var avatarUrl: String? = null
     var handler: BeerItemClickHandler? = null
+    override fun toString(): String {
+        return "BeerListItemUiState(id=$id, name=$name, avatarUrl=$avatarUrl, handler=$handler)"
+    }
+
 
 }
