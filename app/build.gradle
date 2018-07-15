@@ -28,8 +28,8 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "com.android.support:appcompat-v7:$supportLibVersion"
     implementation "com.android.support.constraint:constraint-layout:$constraintLayoutVersion"
 
@@ -58,15 +58,17 @@ dependencies {
     //Lifecycle
     implementation "android.arch.lifecycle:extensions:$lifecycleVersion"
 
-
     //retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
-
     implementation 'com.facebook.fresco:fresco:1.9.0'
+
     // Provide the Android support library (you might already have this or a similar dependency)
-    implementation 'com.android.support:support-core-utils:24.2.1'
+    implementation 'com.android.support:support-core-utils:27.1.1'
+
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
 
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

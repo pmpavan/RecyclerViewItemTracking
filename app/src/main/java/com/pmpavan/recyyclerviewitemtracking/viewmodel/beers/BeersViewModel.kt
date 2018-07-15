@@ -24,13 +24,14 @@ class BeersViewModel @Inject constructor(var context: Context, var eventBus: Eve
     private val items = mutableListOf<BeerListItemUiState>()
 
     init {
-        interactor.getBeersListFromApi()
+        interactor.getBeersListFromApi("anime", 1, "upcoming")
                 .toObservable()
+                .map { t -> t.getTop() ?: mutableListOf() }
                 .concatMapIterable { t -> t }
                 .concatMap { t ->
                     val uiState = BeerListItemUiState()
-                    uiState.id = t.getId()!!
-                    uiState.name = t.getName()
+                    uiState.id = t.getMalId()!!
+                    uiState.name = t.getTitle()
                     uiState.avatarUrl = t.getImageUrl()
                     return@concatMap Observable.just(uiState)
                 }
