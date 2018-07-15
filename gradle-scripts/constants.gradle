@@ -1,0 +1,12 @@
+ext{
+    supportLibVersion = '27.1.1'
+    constraintLayoutVersion = '1.1.2'
+    junitVersion = '4.12'
+    daggerVersion = '2.13'
+    eventbusVersion = '3.0.0'
+    gsonVersion = "2.8.2"
+    rxjavaVersion = '2.1.0'
+    rxandroidVersion = '2.0.1'
+    lifecycleVersion = '1.1.1'
+    retrofitVersion = '2.3.0'
+}
