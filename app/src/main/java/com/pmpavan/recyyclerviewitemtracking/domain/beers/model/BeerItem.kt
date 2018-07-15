@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
 class BeerItem {
     @SerializedName("id")
     @Expose
-    private var id: Int? = null
+    private var id: Long? = null
     @SerializedName("name")
     @Expose
     private var name: String? = null
@@ -69,11 +69,11 @@ class BeerItem {
     @Expose
     private var contributedBy: String? = null
 
-    fun getId(): Int? {
+    fun getId(): Long? {
         return id
     }
 
-    fun setId(id: Int?) {
+    fun setId(id: Long?) {
         this.id = id
     }
 
