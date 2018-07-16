@@ -16,6 +16,8 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import javax.inject.Inject
+import android.support.v7.widget.GridLayoutManager
+
 
 class TrackingActivity : BaseActivity() {
 
@@ -49,6 +51,7 @@ class TrackingActivity : BaseActivity() {
     private fun setupControllers() {
         adapter.handler = viewModel
 
+//        viewDataBinding.beerList.layoutManager = GridLayoutManager(this, 2)
         viewDataBinding.beerList.adapter = adapter
         viewDataBinding.beers = listState
         viewModel.data.observe(this@TrackingActivity, Observer { t ->

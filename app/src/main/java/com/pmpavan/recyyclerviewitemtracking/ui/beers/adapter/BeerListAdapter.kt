@@ -96,8 +96,9 @@ class BeerListAdapter @Inject constructor(val context: Context) : RecyclerView.A
             disposable?.dispose()
         }
 
+        var disposable: Disposable? = null
+
         companion object {
-            var disposable: Disposable? = null
             fun create(inflater: LayoutInflater, parent: ViewGroup): BeerItemViewHolder {
                 val binding: BeerListItemBinding = DataBindingUtil.inflate(inflater, R.layout.beer_list_item, parent, false)
                 return BeerItemViewHolder(binding)
