@@ -10,8 +10,10 @@ import com.pmpavan.recyyclerviewitemtracking.R
 import com.pmpavan.recyyclerviewitemtracking.viewmodel.beers.uistate.BeerListItemUiState
 import javax.inject.Inject
 import com.pmpavan.recyyclerviewitemtracking.databinding.BeerListItemBinding
+import com.pmpavan.recyyclerviewitemtracking.domain.beers.model.BeerItem
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Action
 import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
@@ -56,25 +58,46 @@ class BeerListAdapter @Inject constructor(val context: Context) : RecyclerView.A
         }
     }
 
+    override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
+        super.onViewDetachedFromWindow(holder)
+        Log.i("TAGG", "onViewDetachedFromWindow " + ((holder as BeerItemViewHolder).binding.root.tag as BeerListItemUiState).name)
+        (holder as BeerItemViewHolder).onStopTimer()
+
+    }
+
+    override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
+        super.onViewAttachedToWindow(holder)
+        Log.i("TAGG", "onViewAttachedToWindow " + ((holder as BeerItemViewHolder).binding.root.tag as BeerListItemUiState).name)
+        (holder as BeerItemViewHolder).onStartTimer()
+    }
+
     internal class BeerItemViewHolder(val binding: BeerListItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: BeerListItemUiState) {
             binding.vm = item
+            binding.root.tag = item
             binding.executePendingBindings()
-            timer = Observable.timer(3, TimeUnit.SECONDS)
-            timer!!.subscribeOn(Schedulers.io())
+        }
+
+        fun onStartTimer() {
+            disposable = Observable.timer(3, TimeUnit.SECONDS)
+                    .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
-                        Log.i("TAGG", "3 second up " + item.name)
+                        Log.i("TAGG", "3 second up " + binding.root.tag)
                     },
                             {
 
-                                Log.i("TAGG", "3 second doown")
+                                Log.i("TAGG", "3 second down " + binding.root.tag)
                             })
         }
 
+        fun onStopTimer() {
+            disposable?.dispose()
+        }
+
         companion object {
-            var timer: Observable<Long>? = null
+            var disposable: Disposable? = null
             fun create(inflater: LayoutInflater, parent: ViewGroup): BeerItemViewHolder {
                 val binding: BeerListItemBinding = DataBindingUtil.inflate(inflater, R.layout.beer_list_item, parent, false)
                 return BeerItemViewHolder(binding)
