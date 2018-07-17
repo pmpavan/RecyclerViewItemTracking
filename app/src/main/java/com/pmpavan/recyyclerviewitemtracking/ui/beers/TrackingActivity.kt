@@ -51,7 +51,7 @@ class TrackingActivity : BaseActivity() {
     private fun setupControllers() {
         adapter.handler = viewModel
 
-//        viewDataBinding.beerList.layoutManager = GridLayoutManager(this, 2)
+        viewDataBinding.beerList.layoutManager = GridLayoutManager(this, 2)
         viewDataBinding.beerList.adapter = adapter
         viewDataBinding.beers = listState
         viewModel.data.observe(this@TrackingActivity, Observer { t ->

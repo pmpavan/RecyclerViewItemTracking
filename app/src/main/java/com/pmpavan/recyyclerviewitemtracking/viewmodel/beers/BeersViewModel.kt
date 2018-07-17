@@ -24,7 +24,8 @@ class BeersViewModel @Inject constructor(var context: Context, var eventBus: Eve
     private val items = mutableListOf<BeerListItemUiState>()
 
     init {
-        interactor.getBeersListFromApi("anime", 1, "upcoming")
+        // subtypes --> airing, upcoming, tv, movie, ova, special
+        interactor.getBeersListFromApi("anime", 1, "airing")
                 .toObservable()
                 .map { t -> t.getTop() ?: mutableListOf() }
                 .concatMapIterable { t -> t }
