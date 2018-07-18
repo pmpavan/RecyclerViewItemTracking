@@ -1,4 +1,5 @@
 package com.pmpavan.recyyclerviewitemtracking.viewmodel.beers.events
 
-class ViewModelEvent {
+class OnListLoadFailed {
+    var message: String? = ""
 }

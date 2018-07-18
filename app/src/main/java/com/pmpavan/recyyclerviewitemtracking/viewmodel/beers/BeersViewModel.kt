@@ -6,6 +6,7 @@ import android.util.Log
 import com.pmpavan.recyyclerviewitemtracking.domain.beers.interactor.BeerInteractor
 import com.pmpavan.recyyclerviewitemtracking.domain.beers.model.BeerItem
 import com.pmpavan.recyyclerviewitemtracking.viewmodel.base.BaseViewModel
+import com.pmpavan.recyyclerviewitemtracking.viewmodel.beers.events.ListLoadedEvent
 import com.pmpavan.recyyclerviewitemtracking.viewmodel.beers.uistate.BeerListItemUiState
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -40,7 +41,6 @@ class BeersViewModel @Inject constructor(var context: Context, var eventBus: Eve
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    Log.i("BeersViewModel", it.toString())
                     populateListView(it)
                 }, {
                     Log.e("BeersViewModel", it.toString())
@@ -48,16 +48,10 @@ class BeersViewModel @Inject constructor(var context: Context, var eventBus: Eve
     }
 
     private fun populateListView(it: MutableList<BeerListItemUiState>) {
+//        Log.i("BeersViewModel", it.toString())
         items.clear()
         items.addAll(it)
         data.postValue(items)
-    }
-
-    private fun getUiStateObj(t: BeerItem): Observable<BeerListItemUiState>? {
-        val uiState = BeerListItemUiState()
-        uiState.id = t.getId()!!
-        uiState.name = t.getName()
-        uiState.avatarUrl = t.getImageUrl()
-        return Observable.just(uiState)
+        eventBus.post(ListLoadedEvent())
     }
 }
