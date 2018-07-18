@@ -43,9 +43,7 @@ class ViewTracker {
 
                 if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
 
-                    val pair = getFirstAndLastViewedPosition(recyclerView)
-                    val firstVisibleItemPosition = pair.first
-                    val lastVisibleItemPosition = pair.second
+                    val (firstVisibleItemPosition, lastVisibleItemPosition) = getFirstAndLastViewedPosition(recyclerView)
 
                     for (position in 0 until viewsViewed.size) {
                         if (position < firstVisibleItemPosition && position > lastVisibleItemPosition) {
@@ -72,9 +70,7 @@ class ViewTracker {
 
     private fun analyseView(recyclerView: RecyclerView) {
 
-        val pair = getFirstAndLastViewedPosition(recyclerView)
-        val firstVisibleItemPosition = pair.first
-        val lastVisibleItemPosition = pair.second
+        val (firstVisibleItemPosition, lastVisibleItemPosition) = getFirstAndLastViewedPosition(recyclerView)
 
         analyseAndAddViewData(firstVisibleItemPosition,
                 lastVisibleItemPosition)
