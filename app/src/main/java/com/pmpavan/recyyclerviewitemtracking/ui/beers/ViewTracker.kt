@@ -3,7 +3,6 @@ package com.pmpavan.recyyclerviewitemtracking.ui.beers
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
-import android.view.ViewTreeObserver
 import com.pmpavan.recyyclerviewitemtracking.ui.beers.adapter.BeerListAdapter
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -16,9 +15,9 @@ class ViewTracker {
 
     private var firstTrackFlag = false
     private val viewsViewed = ArrayList<Int>()
-    private lateinit var viewTreeObserver: ViewTreeObserver
     private val hashMap = HashMap<Int, Disposable>()
     private lateinit var mainRecyclerView: RecyclerView
+    private val ITEM_VIEWED_TIME_LIMIT_IN_MILLIS = 300.toLong()
 
 
     private fun setRecyclerView(recyclerView: RecyclerView) {
@@ -29,15 +28,13 @@ class ViewTracker {
     fun startTracking(recyclerView: RecyclerView) {
         setRecyclerView(recyclerView)
 
-        viewTreeObserver = recyclerView.viewTreeObserver
-        viewTreeObserver.addOnGlobalLayoutListener {
-            if (!firstTrackFlag) {
-
-                analyseView(recyclerView)
-
-                firstTrackFlag = true
-            }
-        }
+        recyclerView.viewTreeObserver
+                .addOnGlobalLayoutListener {
+                    if (!firstTrackFlag) {
+                        analyseView(recyclerView)
+                        firstTrackFlag = true
+                    }
+                }
 
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView,
@@ -45,11 +42,11 @@ class ViewTracker {
                 super.onScrollStateChanged(recyclerView, newState)
 
                 if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                    val firstVisibleItemPosition = (recyclerView.layoutManager as LinearLayoutManager)
-                            .findFirstVisibleItemPosition()
 
-                    val lastVisibleItemPosition = (recyclerView.layoutManager as LinearLayoutManager)
-                            .findLastVisibleItemPosition()
+                    val pair = getFirstAndLastViewedPosition(recyclerView)
+                    val firstVisibleItemPosition = pair.first
+                    val lastVisibleItemPosition = pair.second
+
                     for (position in 0 until viewsViewed.size) {
                         if (position < firstVisibleItemPosition && position > lastVisibleItemPosition) {
                             clearViewViewed(position)
@@ -64,13 +61,20 @@ class ViewTracker {
         })
     }
 
-    private fun analyseView(recyclerView: RecyclerView) {
-
+    private fun getFirstAndLastViewedPosition(recyclerView: RecyclerView): Pair<Int, Int> {
         val firstVisibleItemPosition = (recyclerView.layoutManager as LinearLayoutManager)
                 .findFirstVisibleItemPosition()
 
         val lastVisibleItemPosition = (recyclerView.layoutManager as LinearLayoutManager)
                 .findLastVisibleItemPosition()
+        return Pair(firstVisibleItemPosition, lastVisibleItemPosition)
+    }
+
+    private fun analyseView(recyclerView: RecyclerView) {
+
+        val pair = getFirstAndLastViewedPosition(recyclerView)
+        val firstVisibleItemPosition = pair.first
+        val lastVisibleItemPosition = pair.second
 
         analyseAndAddViewData(firstVisibleItemPosition,
                 lastVisibleItemPosition)
@@ -91,17 +95,14 @@ class ViewTracker {
 
     private fun analyseAndAddViewData(firstVisibleItemPosition: Int,
                                       lastVisibleItemPosition: Int) {
-
-        Log.i("ViewTracker", "first $firstVisibleItemPosition last $lastVisibleItemPosition")
         // Analyze all the views
         for (viewPosition in firstVisibleItemPosition..lastVisibleItemPosition) {
-            Log.i("ViewTracker", viewPosition.toString())
             addViewsViewed(viewPosition)
         }
     }
 
     private fun onStartTimer(viewPosition: Int): Disposable {
-        return Observable.timer(3, TimeUnit.SECONDS)
+        return Observable.timer(ITEM_VIEWED_TIME_LIMIT_IN_MILLIS, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
@@ -112,18 +113,15 @@ class ViewTracker {
     }
 
     private fun onSuccess(position: Int) {
-        Log.i("ViewTracker", "3 second up $position ${(mainRecyclerView.adapter as BeerListAdapter).getItem(position).name}")
-
+        Log.i("ViewTracker", "${(mainRecyclerView.adapter as BeerListAdapter).getItem(position).name} has been viewed by the user for 300 milliseconds")
     }
 
     private fun onError(throwable: Throwable, viewPosition: Int) {
 //        Log.i("ViewTracker", "$viewPosition")
-
     }
 
     private fun onStopTimer(position: Int, disposable: Disposable?) {
         disposable?.dispose()
-        Log.i("ViewTracker", "view tracking stopped $position")
     }
 
 }
