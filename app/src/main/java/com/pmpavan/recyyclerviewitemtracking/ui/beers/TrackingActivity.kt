@@ -40,6 +40,7 @@ class TrackingActivity : BaseActivity() {
         registerForEvents(eventBus)
         invokeDataBinding()
         setupControllers()
+        sendRequest()
     }
 
 
@@ -60,7 +61,10 @@ class TrackingActivity : BaseActivity() {
         viewModel.data.observe(this@TrackingActivity, Observer { t ->
             listState.update(t!!)
         })
+    }
 
+    private fun sendRequest() {
+        viewModel.onPageLoaded()
     }
 
     override fun onDestroy() {

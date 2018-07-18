@@ -2,6 +2,7 @@ package com.pmpavan.recyyclerviewitemtracking.ui.base
 
 import android.databinding.BindingAdapter
 import android.support.v7.widget.RecyclerView
+import android.view.View
 import android.widget.ImageView
 import com.facebook.drawee.view.SimpleDraweeView
 import com.pmpavan.recyyclerviewitemtracking.R
@@ -25,16 +26,26 @@ object BaseBindingAdapters {
 
     @BindingAdapter("imageUrl")
     @JvmStatic
-    fun SimpleDraweeView.setImage(imageUrl: String?) {
+    fun SimpleDraweeView.setImageUrl(imageUrl: String?) {
         if (imageUrl != null) {
-            setImage(imageUrl)
+            setImageURI(imageUrl)
         }
     }
+
     @BindingAdapter("imageUrl")
     @JvmStatic
     fun ImageView.setImageUrl(imageUrl: String?) {
         if (imageUrl != null) {
             Picasso.get().load(imageUrl).placeholder(R.mipmap.ic_launcher).into(this)
+        }
+    }
+
+
+    @BindingAdapter("android:visibility")
+    @JvmStatic
+    fun View.setVisibility(imageUrl: Boolean?) {
+        if (imageUrl != null) {
+            visibility = if (imageUrl) View.VISIBLE else View.GONE
         }
     }
 }
