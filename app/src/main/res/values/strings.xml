@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">RecyclerViewItemTracking</string>
+    <string name="error_msg">Some Problem in Server</string>
 </resources>

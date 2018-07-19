@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 class BeerApi @Inject constructor(val apiInterface: BeerApiService) : BaseApi() {
 
-    fun getBeersListFromApi(type: String, page: Int, subtype: String): Single<AnimeItem> {
+    fun getBeersListFromApi(type: String?, page: Int, subtype: String?): Single<AnimeItem> {
         return apiInterface.getBeersList(type, page, subtype)
     }
 

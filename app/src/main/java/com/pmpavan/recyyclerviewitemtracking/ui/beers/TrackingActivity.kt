@@ -3,6 +3,7 @@ package com.pmpavan.recyyclerviewitemtracking.ui.beers
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.arch.paging.PagedList
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import com.pmpavan.recyyclerviewitemtracking.R
@@ -18,6 +19,7 @@ import org.greenrobot.eventbus.ThreadMode
 import javax.inject.Inject
 import com.pmpavan.recyyclerviewitemtracking.viewmodel.beers.events.ListLoadedEvent
 import android.support.design.widget.Snackbar
+import com.pmpavan.recyyclerviewitemtracking.viewmodel.beers.uistate.BeerListItemUiState
 
 
 class TrackingActivity : BaseActivity() {
@@ -61,6 +63,8 @@ class TrackingActivity : BaseActivity() {
         viewModel.data.observe(this@TrackingActivity, Observer { t ->
             listState.update(t!!)
         })
+        viewModel.userList.observe(this, Observer<PagedList<BeerListItemUiState>> { adapter.setList(it!!) })
+
     }
 
     private fun sendRequest() {
@@ -75,7 +79,7 @@ class TrackingActivity : BaseActivity() {
     private fun showSnackBar(message: String?) {
         val snackBar = Snackbar
                 .make(viewDataBinding.parentLayout, message
-                        ?: "Some Problem in Server", Snackbar.LENGTH_SHORT)
+                        ?: getString(R.string.error_msg), Snackbar.LENGTH_SHORT)
 
         snackBar.show()
     }

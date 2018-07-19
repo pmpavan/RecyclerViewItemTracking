@@ -14,7 +14,7 @@ class AnimeItem {
     private var requestCached: Boolean? = null
     @SerializedName("top")
     @Expose
-    private var top: List<Top>? = null
+    private var top: List<Top> = mutableListOf()
 
     fun getRequestHash(): String? {
         return requestHash
@@ -32,7 +32,7 @@ class AnimeItem {
         this.requestCached = requestCached
     }
 
-    fun getTop(): List<Top>? {
+    fun getTop(): List<Top> {
         return top
     }
 

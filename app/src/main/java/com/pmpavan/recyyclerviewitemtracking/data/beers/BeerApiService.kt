@@ -8,5 +8,5 @@ import retrofit2.http.Path
 interface BeerApiService {
 
     @GET("{type}/{page}/{subtype}")
-    fun getBeersList(@Path("type") type: String, @Path("page") page: Int, @Path("subtype") subtype: String): Single<AnimeItem>
+    fun getBeersList(@Path("type") type: String?, @Path("page") page: Int, @Path("subtype") subtype: String?): Single<AnimeItem>
 }

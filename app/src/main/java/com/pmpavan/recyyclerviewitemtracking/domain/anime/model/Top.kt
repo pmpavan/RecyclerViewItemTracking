@@ -8,7 +8,7 @@ class Top {
 
     @SerializedName("mal_id")
     @Expose
-    private var malId: Long? = null
+    private var malId: Long = -1L
     @SerializedName("rank")
     @Expose
     private var rank: Int? = null
@@ -40,11 +40,11 @@ class Top {
     @Expose
     private var episodes: Int? = null
 
-    fun getMalId(): Long? {
+    fun getMalId(): Long {
         return malId
     }
 
-    fun setMalId(malId: Long?) {
+    fun setMalId(malId: Long) {
         this.malId = malId
     }
 

@@ -1,11 +1,16 @@
 package com.pmpavan.recyyclerviewitemtracking.viewmodel.beers
 
+import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
+import android.arch.paging.LivePagedListBuilder
+import android.arch.paging.PagedList
 import android.content.Context
 import android.databinding.ObservableBoolean
 import android.util.Log
+import com.pmpavan.recyyclerviewitemtracking.domain.anime.model.Top
 import com.pmpavan.recyyclerviewitemtracking.domain.beers.interactor.BeerInteractor
 import com.pmpavan.recyyclerviewitemtracking.domain.beers.model.BeerItem
+import com.pmpavan.recyyclerviewitemtracking.domain.beers.model.Query
 import com.pmpavan.recyyclerviewitemtracking.viewmodel.base.BaseViewModel
 import com.pmpavan.recyyclerviewitemtracking.viewmodel.beers.events.ListLoadFailedEvent
 import com.pmpavan.recyyclerviewitemtracking.viewmodel.beers.events.ListLoadedEvent
@@ -23,8 +28,19 @@ class BeersViewModel @Inject constructor(var context: Context, var eventBus: Eve
     val progressState = ObservableBoolean()
     private val items = mutableListOf<BeerListItemUiState>()
 
+    var userList: LiveData<PagedList<BeerListItemUiState>>
+
+    private val sourceFactory: BeerDataSourceFactory
+
     init {
         progressState.set(true)
+        sourceFactory = BeerDataSourceFactory( interactor)
+        val config = PagedList.Config.Builder()
+                .setPageSize(pageSize)
+                .setInitialLoadSizeHint(pageSize * 2)
+                .setEnablePlaceholders(false)
+                .build()
+        userList = LivePagedListBuilder<Query, Top>(sourceFactory, config).build()
     }
 
     fun onPageLoaded() {
@@ -32,11 +48,9 @@ class BeersViewModel @Inject constructor(var context: Context, var eventBus: Eve
         // subtypes --> airing, upcoming, tv, movie, ova, special
         interactor.getBeersListFromApi("anime", 1, "airing")
                 .toObservable()
-                .map { t -> t.getTop() ?: mutableListOf() }
                 .concatMapIterable { t -> t }
                 .concatMap { t ->
                     val uiState = BeerListItemUiState()
-                    uiState.id = t.getMalId()!!
                     uiState.name = t.getTitle()
                     uiState.avatarUrl = t.getImageUrl()
                     return@concatMap Observable.just(uiState)

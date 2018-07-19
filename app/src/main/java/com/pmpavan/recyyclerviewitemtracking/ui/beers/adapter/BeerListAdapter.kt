@@ -1,7 +1,9 @@
 package com.pmpavan.recyyclerviewitemtracking.ui.beers.adapter
 
+import android.arch.paging.PagedListAdapter
 import android.content.Context
 import android.databinding.DataBindingUtil
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,7 +18,7 @@ import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class BeerListAdapter @Inject constructor(val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class BeerListAdapter @Inject constructor(val context: Context) :  PagedListAdapter<BeerListItemUiState, RecyclerView.ViewHolder>(BeerDiffCallBack ) {
 
     private var items: MutableList<BeerListItemUiState> = mutableListOf()
 
@@ -28,7 +30,7 @@ class BeerListAdapter @Inject constructor(val context: Context) : RecyclerView.A
         notifyDataSetChanged()
     }
 
-    fun getItem(position: Int): BeerListItemUiState {
+    override fun getItem(position: Int): BeerListItemUiState {
         return items[position]
     }
 
@@ -101,6 +103,7 @@ class BeerListAdapter @Inject constructor(val context: Context) : RecyclerView.A
                 val binding: BeerListItemBinding = DataBindingUtil.inflate(inflater, R.layout.beer_list_item, parent, false)
                 return BeerItemViewHolder(binding)
             }
+
         }
     }
 }
