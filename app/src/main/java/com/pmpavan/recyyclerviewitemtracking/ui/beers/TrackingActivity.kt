@@ -19,6 +19,7 @@ import org.greenrobot.eventbus.ThreadMode
 import javax.inject.Inject
 import com.pmpavan.recyyclerviewitemtracking.viewmodel.beers.events.ListLoadedEvent
 import android.support.design.widget.Snackbar
+import com.pmpavan.recyyclerviewitemtracking.domain.anime.model.Top
 import com.pmpavan.recyyclerviewitemtracking.viewmodel.beers.uistate.BeerListItemUiState
 
 
@@ -63,7 +64,7 @@ class TrackingActivity : BaseActivity() {
         viewModel.data.observe(this@TrackingActivity, Observer { t ->
             listState.update(t!!)
         })
-        viewModel.userList.observe(this, Observer<PagedList<BeerListItemUiState>> { adapter.setList(it!!) })
+        viewModel.userList.observe(this, Observer<PagedList<Top>> { viewModel.transformListItems(it!!) })
 
     }
 

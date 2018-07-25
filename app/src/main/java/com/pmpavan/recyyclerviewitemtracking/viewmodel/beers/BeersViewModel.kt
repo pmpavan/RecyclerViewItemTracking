@@ -9,7 +9,6 @@ import android.databinding.ObservableBoolean
 import android.util.Log
 import com.pmpavan.recyyclerviewitemtracking.domain.anime.model.Top
 import com.pmpavan.recyyclerviewitemtracking.domain.beers.interactor.BeerInteractor
-import com.pmpavan.recyyclerviewitemtracking.domain.beers.model.BeerItem
 import com.pmpavan.recyyclerviewitemtracking.domain.beers.model.Query
 import com.pmpavan.recyyclerviewitemtracking.viewmodel.base.BaseViewModel
 import com.pmpavan.recyyclerviewitemtracking.viewmodel.beers.events.ListLoadFailedEvent
@@ -21,20 +20,20 @@ import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
-class BeersViewModel @Inject constructor(var context: Context, var eventBus: EventBus, val interactor: BeerInteractor)
+class BeersViewModel @Inject constructor(var context: Context, var eventBus: EventBus, val interactor: BeerInteractor, val sourceFactory: BeerDataSourceFactory)
     : BaseViewModel(), BeerListItemUiState.BeerItemClickHandler {
 
     val data = MutableLiveData<MutableList<BeerListItemUiState>>()
     val progressState = ObservableBoolean()
     private val items = mutableListOf<BeerListItemUiState>()
 
-    var userList: LiveData<PagedList<BeerListItemUiState>>
+    var userList: LiveData<PagedList<Top>>
 
-    private val sourceFactory: BeerDataSourceFactory
+
+    private val pageSize: Int = 20
 
     init {
-        progressState.set(true)
-        sourceFactory = BeerDataSourceFactory( interactor)
+        progressState.set(false)
         val config = PagedList.Config.Builder()
                 .setPageSize(pageSize)
                 .setInitialLoadSizeHint(pageSize * 2)
@@ -43,9 +42,29 @@ class BeersViewModel @Inject constructor(var context: Context, var eventBus: Eve
         userList = LivePagedListBuilder<Query, Top>(sourceFactory, config).build()
     }
 
+    fun transformListItems(items: List<Top>) {
+        progressState.set(false)
+        Observable.just(items)
+                .concatMapIterable { t -> t }
+                .concatMap { t ->
+                    val uiState = BeerListItemUiState()
+                    uiState.name = t.getTitle()
+                    uiState.avatarUrl = t.getImageUrl()
+                    return@concatMap Observable.just(uiState)
+                }
+                .toList()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    populateListView(it)
+                }, {
+                    onListLoadError(it)
+                })
+    }
+
     fun onPageLoaded() {
-        progressState.set(true)
-        // subtypes --> airing, upcoming, tv, movie, ova, special
+        progressState.set(false)
+//        // subtypes --> airing, upcoming, tv, movie, ova, special
         interactor.getBeersListFromApi("anime", 1, "airing")
                 .toObservable()
                 .concatMapIterable { t -> t }

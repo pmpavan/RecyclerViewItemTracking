@@ -30,6 +30,10 @@ class BeerListAdapter @Inject constructor(val context: Context) :  PagedListAdap
         notifyDataSetChanged()
     }
 
+    fun getItemAt(position: Int): BeerListItemUiState {
+        return items[position]
+    }
+
     override fun getItem(position: Int): BeerListItemUiState {
         return items[position]
     }

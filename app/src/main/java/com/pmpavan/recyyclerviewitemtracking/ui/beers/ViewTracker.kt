@@ -109,7 +109,7 @@ class ViewTracker {
     }
 
     private fun onSuccess(position: Int) {
-        Log.i("ViewTracker", "${(mainRecyclerView.adapter as BeerListAdapter).getItem(position).name} has been viewed by the user for 300 milliseconds")
+        Log.i("ViewTracker", "${(mainRecyclerView.adapter as BeerListAdapter).getItemAt(position).name} has been viewed by the user for 300 milliseconds")
     }
 
     private fun onError(throwable: Throwable, viewPosition: Int) {
